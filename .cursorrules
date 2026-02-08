@@ -1,0 +1,78 @@
+從現在起，你所有的回答開頭都必須加上：『遵命，地下城主！
+
+
+🛠️ 類 D&D 遊戲：內容擴充與自訂指南
+這份指南將引導你如何透過修改 App.jsx 中的核心數據結構，來增加遊戲的豐富度。
+1. 🧙 新增職業 (CLASS_CONFIG)
+如果你想增加「聖騎士」或「盜賊」，請在 CLASS_CONFIG 中新增物件。
+範例：增加「聖騎士」
+paladin: {
+  id: "paladin",
+  name: "聖騎士",
+  hitDie: 10,           // 升級時投擲 d10 增加 HP
+  primaryStat: "str",    // 攻擊判定使用力量
+  equipment: {
+    weapon: { name: "戰錘", icon: "🔨", die: 8 }, // 1d8 傷害
+    armor: { name: "板甲", acBase: 18, icon: "🛡️" } // 基礎防禦更高
+  },
+  desc: "誓言的守護者，擁有極高的防禦與力量。"
+}
+2. 🗺️ 擴展世界地圖 (WORLD_DATA)
+要增加新的地點，除了在 WORLD_DATA 新增座標外，也要記得在 UI 按鈕中加入路徑。
+範例：增加「巨龍之巔」
+在 WORLD_DATA 加入：
+volcano: { 
+  id: "volcano", 
+  name: "巨龍之巔", 
+  x: 85, y: 15, // 在地圖右上角
+  image: "圖片網址", 
+  description: "熾熱的岩漿噴發，這裡是紅龍的領地。" 
+}
+在 village 的 options 中加入：{ text: "前往火山", target: "volcano", icon: "🌋", minLevel: 5 }
+3. 👹 設計新怪物 (MONSTERS)
+怪物會根據地點區分，你可以為每個地點設計多種怪物。
+範例：在火山增加「幼龍」
+volcano: [
+  { 
+    name: "紅幼龍", 
+    hp: 80, 
+    ac: 15, 
+    atkBonus: 7, 
+    agi: 14, 
+    damageRange: [10, 20], // 傷害介於 10-20
+    exp: 500, 
+    gold: 200, 
+    image: "圖片網址" 
+  }
+]
+4. 📜 編寫新任務 (QUEST_DATA)
+任務可以分為「公會委託（可重複/狩獵）」或「傳奇任務（主線/唯一）」。
+範例：巨龍獵人任務
+dragon_hunt: { 
+  id: "dragon_hunt", 
+  type: "Guild", 
+  title: "公會：屠龍勇士", 
+  hint: "前往「巨龍之巔」擊敗紅幼龍。", 
+  targetLocation: "volcano", 
+  targetCount: 1, 
+  reward: { exp: 1000, gold: 500 }, 
+  triggerMonster: "紅幼龍" 
+}
+5. 🔮 增加法術 (SKILLS_DB)
+法師會隨著等級解鎖法術，你可以在此定義法術威力。
+範例：增加 5 級法術「雷霆一擊」
+thunder_clap: { 
+  name: "雷霆一擊", 
+  level: 5, 
+  baseDamage: 50, 
+  icon: "⚡", 
+  type: "damage" 
+}
+提示：記得在 winCombat 邏輯中加入 Lv.5 解鎖此法術的代碼。
+🎲 數值平衡建議 (D&D 5E 參考)
+防禦 (AC)：初期怪物 AC 建議在 10-13，中後期 15-18。
+命中 (Atk Bonus)：玩家命中 = 屬性修正 + 熟練加成。如果怪物 AC 15，玩家命中 +5，則需擲出 10 點以上才能命中（55% 機率）。
+生命骰 (Hit Die)：戰士 d10 (高), 遊俠 d10 (中), 法師 d6 (低)。
+現在，試著新增一個地點並放一隻你設計的怪物進去吧！如果你遇到代碼報錯，隨時把錯誤訊息貼給我。
+
+這些是我接下來要做的部分。我沒有用遊戲引擎製作。這樣建議vibe coding嗎?
